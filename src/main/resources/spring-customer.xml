@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+       
+    <bean id="customerService" class="com.ipn.app.service.CustomerService">
+	<property name="name" value="Yong Mook Kim" />
+	<property name="url" value="http://www.mkyong.com" />
+    </bean>
+    
+    <bean id="userBean" class="com.ipn.app.bean.UsuarioBean">
+        <property name="nombre" value="David" />
+        <property name="apPaterno" value="Montes" />
+        <property name="apMaterno" value="Luna" />
+    </bean>
+    
+    <bean id="usuarioService" class="com.ipn.app.service.AdministraUsuariosService">
+        <property name="usuario" ref="userBean" />
+    </bean>
+    
+    <bean id="hijackBeforeMethod" class="com.ipn.app.advice.HijackBeforeMethod" />
+    <bean id="bitacoraAspect" class="com.ipn.app.advice.BitacoraAspectAround" />
+    
+    <bean id="customerServiceProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        
+        <property name="target" ref="customerService" />
+        
+        <property name="interceptorNames">
+            <list>
+                <value>hijackBeforeMethod</value>
+            </list>
+        </property>
+        
+    </bean>
+    
+    <bean id="usuarioServiceProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="usuarioService" />
+        <property name="interceptorNames">
+            <list>
+                <value>bitacoraAspect</value>
+            </list>
+        </property>
+    </bean>
+    
+</beans>
+
